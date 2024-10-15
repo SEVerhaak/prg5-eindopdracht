@@ -1,0 +1,15 @@
+
+10 Okt:
+- Eerste view aangemaakt ()
+- Eerste controller aangemaakt ()
+
+13 Okt:
+- eerste ERD gemaakt
+
+14 Okt:
+- secret controller gemaakt, geeft array mee
+- secret pagina, route en view aangemaakt
+- custom navbar component aangemaakt
+- navbar past aan of gebruiker ingelogd is
+- log out knop toegevoegd
+
