@@ -13,3 +13,5 @@
 - navbar past aan of gebruiker ingelogd is
 - log out knop toegevoegd
 
+15 Okt:
+- Eerste 2 DB toegevoegd (genres & albums)

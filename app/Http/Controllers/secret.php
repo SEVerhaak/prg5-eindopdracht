@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Album;
 use Illuminate\Http\Request;
 
 class secret extends Controller
 {
     public function secret(){
-        $secret = ['Paramazan', 'Tabby', 'Tapir'];
-        return view('logged-in-test', compact('secret'));
+        /*
+        $album = new Album;
+        $album->name = 'test';
+        $album->artist = 'test-artist';
+        $album->year = '2003';
+        */
+        $album = Album::find(1);
+
+
+        // $secret = ['Paramazan', 'Tabby', 'Tapir'];
+        return view('logged-in-test', compact('album'));
     }
 }

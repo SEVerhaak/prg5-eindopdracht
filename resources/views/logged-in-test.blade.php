@@ -12,7 +12,7 @@
 
 </x-nav-bar>
 <h1>Secret Page</h1>
-<x-secret-list :secret="$secret">
+<x-secret-list :album="$album">
 
 </x-secret-list>
 

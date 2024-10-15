@@ -1,13 +1,16 @@
-@props(['secret' => $secret])
+@props(['album' => $album])
 
 @if(auth()->check())
     <p>You are logged in as {{ auth()->user()->name }}.</p>
     <p>Now you can see the list:</p>
     <ul>
             <?php
-            foreach ($secret as $x) {
+
+            foreach ($album as $x) {
                 echo "<li> $x </li>";
             }
+
+         echo $album
             ?>
     </ul>
 
