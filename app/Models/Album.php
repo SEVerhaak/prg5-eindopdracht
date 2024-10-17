@@ -7,5 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Album extends Model
 {
-
+    public function genre(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Genre::class);
+    }
 }

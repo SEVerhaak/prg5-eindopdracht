@@ -21,7 +21,7 @@ Route::get('/contact', function () {
 
 Route::resource('/products', ProductController::class);
 
-Route::resource('/create', \App\Http\Controllers\TestsController::class);
+Route::resource('/tests', \App\Http\Controllers\TestsController::class);
 
 
 

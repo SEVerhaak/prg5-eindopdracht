@@ -16,7 +16,6 @@ class secret extends Controller
         */
         $albums = Album::all();
 
-
         // $secret = ['Paramazan', 'Tabby', 'Tapir'];
         return view('logged-in-test', compact('albums'));
     }

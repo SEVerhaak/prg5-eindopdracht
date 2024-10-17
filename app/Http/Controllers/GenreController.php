@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\tests;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 
-class TestsController extends Controller
+class GenreController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //return view('category.create');
+        //
     }
 
     /**
@@ -20,7 +20,7 @@ class TestsController extends Controller
      */
     public function create()
     {
-        return view('category.create');
+        //
     }
 
     /**
@@ -28,20 +28,13 @@ class TestsController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request);
-        $request->validate(['title' => 'required']);
-
-        $category = new tests();
-        $category->title = $request->input('title');
-        $category->save();
-
-        return redirect()->route('welcome');
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(tests $tests)
+    public function show(Genre $genre)
     {
         //
     }
@@ -49,7 +42,7 @@ class TestsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(tests $tests)
+    public function edit(Genre $genre)
     {
         //
     }
@@ -57,7 +50,7 @@ class TestsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, tests $tests)
+    public function update(Request $request, Genre $genre)
     {
         //
     }
@@ -65,7 +58,7 @@ class TestsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(tests $tests)
+    public function destroy(Genre $genre)
     {
         //
     }

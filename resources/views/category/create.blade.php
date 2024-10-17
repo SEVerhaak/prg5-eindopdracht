@@ -12,7 +12,7 @@
 
 </x-nav-bar>
 <h1>test</h1>
-<form method="POST" action={{route('create.store')}}>
+<form method="POST" action={{route('tests.store')}}>
     @csrf
     <label for="title">Title</label>
     <input type="text" id="title" name="title">
