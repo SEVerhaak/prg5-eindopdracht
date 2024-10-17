@@ -23,6 +23,7 @@ Route::resource('/products', ProductController::class);
 
 Route::resource('/tests', \App\Http\Controllers\TestsController::class);
 
+Route::resource('/upload', \App\Http\Controllers\UploadController::class);
 
 
 Route::get('/about-us/{id}', function(?string $id = null) {
