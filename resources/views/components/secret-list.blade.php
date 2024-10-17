@@ -1,4 +1,4 @@
-@props(['album' => $album])
+@props(['albums' => $albums])
 
 @if(auth()->check())
     <p>You are logged in as {{ auth()->user()->name }}.</p>
@@ -6,11 +6,11 @@
     <ul>
             <?php
 
-            foreach ($album as $x) {
-                echo "<li> $x </li>";
+            foreach ($albums as $album) {
+                echo "<h3> $album->name </h3>";
+                echo "<li>  $album->artist </li>";
+                echo "<li>  $album->year </li>";
             }
-
-         echo $album
             ?>
     </ul>
 

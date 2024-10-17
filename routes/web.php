@@ -5,7 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home.index');
     //return redirect()->route('about-us');
 })->name('welcome');
 
@@ -20,6 +20,9 @@ Route::get('/contact', function () {
 */
 
 Route::resource('/products', ProductController::class);
+
+Route::resource('/create', \App\Http\Controllers\TestsController::class);
+
 
 
 Route::get('/about-us/{id}', function(?string $id = null) {

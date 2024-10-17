@@ -14,10 +14,10 @@ class secret extends Controller
         $album->artist = 'test-artist';
         $album->year = '2003';
         */
-        $album = Album::find(1);
+        $albums = Album::all();
 
 
         // $secret = ['Paramazan', 'Tabby', 'Tapir'];
-        return view('logged-in-test', compact('album'));
+        return view('logged-in-test', compact('albums'));
     }
 }

@@ -5,16 +5,12 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Secret Page</title>
+    <title>Overview</title>
 </head>
-<body>
 <x-nav-bar>
 
 </x-nav-bar>
-<h1>Secret Page</h1>
-<x-secret-list :albums="$albums">
-
-</x-secret-list>
-
+<body>
+<h1>Overview</h1>
 </body>
 </html>

@@ -15,3 +15,9 @@
 
 15 Okt:
 - Eerste 2 DB toegevoegd (genres & albums)
+- Eerste pagina toegevoegd met overzicht van alle albums
+- Ingelogde gebruikers kunnen nu alle albums zien
+
+17 okt
+- Eerste form aangemaakt
+- 
