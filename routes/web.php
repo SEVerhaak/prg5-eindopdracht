@@ -25,6 +25,8 @@ Route::resource('/tests', \App\Http\Controllers\TestsController::class);
 
 Route::resource('/upload', \App\Http\Controllers\UploadController::class);
 
+Route::resource('/overview', \App\Http\Controllers\overviewController::class);
+
 
 Route::get('/about-us/{id}', function(?string $id = null) {
     return view('about-us',

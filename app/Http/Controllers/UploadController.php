@@ -63,13 +63,6 @@ class UploadController extends Controller
         return redirect()->route('welcome');
     }
 
-    public function prepareImage($request)
-    {
-        $path = $request->input('img')->getRealPath();
-        $logo = file_get_contents($path);
-        return base64_encode($logo);
-    }
-
 
     /**
      * Display the specified resource.
