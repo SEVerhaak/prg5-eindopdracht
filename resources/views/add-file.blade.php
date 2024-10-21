@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Home</title>
     <header>
-        <x-nav-bar>
-
-        </x-nav-bar>
+        <x-nav-bar></x-nav-bar>
     </header>
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">
 <h1>Upload Page</h1>
 
-<form method="POST" enctype="multipart/form-data" action={{route('upload.store')}} >
+<form method="POST" enctype="multipart/form-data" action={{ route('upload.store') }}>
     @csrf
     <label for="title">Title</label>
     <input type="text" id="title" name="title">
@@ -26,9 +24,17 @@
     <label for="img">Image</label>
     <input type="file" id="img" name="img" accept="image/*">
 
-    <button type="submit">Opslaan</button>
+    <!-- Genre Dropdown -->
+    <label for="genre">Genre</label>
+    <select id="genre" name="genre">
+        @foreach ($genre as $g)
+            <option value="{{ $g->id }}">{{ $g->name }}</option>
+        @endforeach
+    </select>
 
+    <button type="submit">Opslaan</button>
 </form>
+
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>

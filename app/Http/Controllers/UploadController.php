@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,7 +23,8 @@ class UploadController extends Controller
     public function create()
     {
         if(auth()->check()){
-            return view('add-file');
+            $genre = Genre::all();
+            return view('add-file', compact('genre'));
         } else{
             return view('auth.login');
         }
