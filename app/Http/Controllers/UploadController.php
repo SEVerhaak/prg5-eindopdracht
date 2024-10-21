@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller
 {
@@ -31,13 +32,14 @@ class UploadController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required',
             'artist' => 'required',
             'year' => 'required',
-            'img' => 'required', // File validation
+            'img' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // File validation with constraints
         ]);
 
         $album = new Album();
@@ -45,23 +47,30 @@ class UploadController extends Controller
         $album->artist = $request->input('artist');
         $album->year = $request->input('year');
 
-        // Handle the image file
+        // Handle the image file using Laravel's storage
         if ($request->hasFile('img')) {
             $image = $request->file('img');
-            $imageBlob = file_get_contents($image->getRealPath()); // Convert image to BLOB
-            $album->image = $imageBlob;
+
+            // Store the image in the 'public/albums' directory and get the path
+            $path = $image->store('albums', 'public');
+
+            // Save the file's URL in the image_url field
+            $album->image_url = Storage::url($path);
+        } else {
+            $album->image_url = null; // Set to null if no image was uploaded
         }
 
-        // $album->image = $this->prepareImage($request);
+        // Additional album fields
+        $album->image = null;
+        $album->genre_id = 1; // Add logic for genre selection
+        $album->user_id = auth()->id(); // Set the current user's ID
 
-        $album->image_url = null; // add logic
-        $album->genre_id = 1; // add logic
-        $album->user_id = @auth()->id(); // add logic
-
+        // Save the album to the database
         $album->save();
 
         return redirect()->route('welcome');
     }
+
 
 
     /**
