@@ -19,13 +19,7 @@ Route::get('/contact', function () {
 })->name('contact');
 */
 
-Route::resource('/products', ProductController::class);
-
-Route::resource('/tests', \App\Http\Controllers\TestsController::class);
-
-Route::resource('/upload', \App\Http\Controllers\UploadController::class);
-
-Route::resource('/overview', \App\Http\Controllers\overviewController::class);
+//Route::resource('/products', ProductController::class);
 
 Route::resource('/albums', \App\Http\Controllers\AlbumController::class);
 

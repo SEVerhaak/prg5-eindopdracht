@@ -3,6 +3,10 @@
 @if(auth()->check())
     <p>You are logged in as {{ auth()->user()->name }}.</p>
     <p>Now you can see the list:</p>
+    <a href="{{route('albums.create')}}">Add album</a>
+    <x-search-bar>
+
+    </x-search-bar>
     <ul>
         @foreach ($albums as $album)
             <li>
