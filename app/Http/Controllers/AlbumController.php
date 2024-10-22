@@ -153,4 +153,18 @@ class AlbumController extends Controller
 
         return redirect()->route('albums.index')->with('success', 'Album deleted successfully!'); // Redirect after deletion
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+
+        // Perform a simple search on album names or artists
+        $albums = Album::where('name', 'LIKE', "%{$query}%")
+            ->orWhere('artist', 'LIKE', "%{$query}%")
+            ->paginate(5);
+
+        return view('item-page', compact('albums'));
+    }
+
 }

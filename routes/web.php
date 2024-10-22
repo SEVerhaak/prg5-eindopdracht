@@ -23,6 +23,9 @@ Route::get('/contact', function () {
 
 Route::resource('/albums', \App\Http\Controllers\AlbumController::class);
 
+Route::get('/search', [\App\Http\Controllers\AlbumController::class, 'search'])->name('search');
+
+
 Route::get('/about-us/{id}', function(?string $id = null) {
     return view('about-us',
         [
