@@ -9,10 +9,10 @@ class secret extends Controller
 {
     public function secret(){
         /*
-        $album = new Album;
-        $album->name = 'test';
-        $album->artist = 'test-artist';
-        $album->year = '2003';
+        $albumController = new Album;
+        $albumController->name = 'test';
+        $albumController->artist = 'test-artist';
+        $albumController->year = '2003';
         */
         $albums = Album::all();
 

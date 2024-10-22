@@ -10,7 +10,7 @@
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">
 <h1>Upload Page</h1>
 
-<form method="POST" enctype="multipart/form-data" action={{ route('upload.store') }}>
+<form method="POST" enctype="multipart/form-data" action={{ route('albums.store') }}>
     @csrf
     <label for="title">Title</label>
     <input type="text" id="title" name="title">

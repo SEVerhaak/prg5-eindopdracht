@@ -62,12 +62,12 @@ class UploadController extends Controller
             $album->image_url = null; // Set to null if no image was uploaded
         }
 
-        // Additional album fields
+        // Additional albumController fields
         $album->image = null;
         $album->genre_id = 1; // Add logic for genre selection
         $album->user_id = auth()->id(); // Set the current user's ID
 
-        // Save the album to the database
+        // Save the albumController to the database
         $album->save();
 
         return redirect()->route('welcome');

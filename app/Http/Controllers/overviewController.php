@@ -16,13 +16,17 @@ class overviewController extends Controller
         if (!auth()->check()) {
             // Redirect to login page if not logged in
             return redirect()->route('login')->with('error', 'You must be logged in to view your albums.');
+        } else{
+            // Retrieve albums that belong to the authenticated user
+            //$albums = Album::where('user_id', auth()->id())->get();
+
+            // Pass the albums to the view
+            //return view('item-page', ['albums' => $albums]);
+            $albums = Album::where('user_id', auth()->id())->paginate(5);
+
+            // Pass the paginated albums to the view
+            return view('item-page', ['albums' => $albums]);
         }
-
-        // Retrieve albums that belong to the authenticated user
-        $albums = Album::where('user_id', auth()->id())->get();
-
-        // Pass the albums to the view
-        return view('item-page', ['albums' => $albums]);
     }
 
     /**

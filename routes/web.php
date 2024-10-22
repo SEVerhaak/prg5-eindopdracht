@@ -27,6 +27,7 @@ Route::resource('/upload', \App\Http\Controllers\UploadController::class);
 
 Route::resource('/overview', \App\Http\Controllers\overviewController::class);
 
+Route::resource('/albums', \App\Http\Controllers\AlbumController::class);
 
 Route::get('/about-us/{id}', function(?string $id = null) {
     return view('about-us',
