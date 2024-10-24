@@ -7,7 +7,9 @@
 
             <a href="{{ url('/dashboard') }}">Dashboard</a>
 
-            <a href="{{ route('secret') }}">Secret</a>
+            <a href="{{ route('albums.index') }}">My Albums</a>
+
+            <a href="{{ route('users.index') }}">User Albums</a>
 
             <form method="POST" action="{{ route('logout') }}">
                 @csrf

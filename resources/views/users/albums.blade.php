@@ -1,5 +1,5 @@
-<x-standard-layout>
-    <h1>Albums of {{ $user->name }}</h1>
+<x-standard-layout title="Albums of {{ $user->name }}">
+<h1>Albums of {{ $user->name }}</h1>
     <ul>
         @foreach ($albums as $album)
             <li>

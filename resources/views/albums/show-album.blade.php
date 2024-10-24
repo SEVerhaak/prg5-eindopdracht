@@ -1,5 +1,5 @@
-<x-standard-layout>
-    <h1>Album Details</h1>
+<x-standard-layout title="{{ $album->name }}">
+<h1>Album Details</h1>
     <div>
         <h2>Name: {{ $album->name }}</h2>
         <p>Artist: {{ $album->artist }}</p>

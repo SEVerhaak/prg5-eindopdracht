@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Home</title>
-    <header>
-        <x-nav-bar></x-nav-bar>
-    </header>
-<body class="font-sans antialiased dark:bg-black dark:text-white/50">
+<x-standard-layout title="Add-Album">
 <h1>Upload Page</h1>
 
 <form method="POST" enctype="multipart/form-data" action={{ route('albums.store') }}>
@@ -47,5 +38,4 @@
         </ul>
     </div>
 @endif
-</body>
-</html>
+</x-standard-layout>

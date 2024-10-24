@@ -11,18 +11,31 @@ class UserListController extends Controller
      */
     public function index()
     {
-
         if (!auth()->check()) {
             return redirect()->route('login')->with('error', 'You must be logged in to view the users.');
         }
 
-        // Get all users where 'is_public' is set to 1 and count the albums for each user
-        $users = \App\Models\User::where('is_public', 1)
-            ->withCount('albums') // Add album count to the query
-            ->paginate(10);
+        // Get the logged-in user
+        $loggedInUser = auth()->user();
+
+        // Check if the logged-in user is an admin
+        if ($loggedInUser->role == 1 || $loggedInUser->role == 2) {
+            // If the user is an admin, show all users except the logged-in user
+            $users = \App\Models\User::where('id', '!=', $loggedInUser->id) // Exclude the logged-in user
+            ->withCount('albums')
+                ->paginate(10);
+        } else {
+            // If the user is not an admin, show only public users except the logged-in user
+            $users = \App\Models\User::where('is_public', 1)
+                ->where('id', '!=', $loggedInUser->id) // Exclude the logged-in user
+                ->withCount('albums')
+                ->paginate(10);
+        }
 
         return view('users.index', compact('users'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -75,16 +88,66 @@ class UserListController extends Controller
      */
     public function edit(string $id)
     {
-        return view('users.edit');
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to view the users.');
+        }
+
+        // Get the logged-in user
+        $loggedInUser = auth()->user();
+
+        // Check if the logged-in user is an admin
+        if ($loggedInUser->role == 1 || $loggedInUser->role == 2) {
+            // Admin can edit any user
+            $user = \App\Models\User::withCount('albums')->findOrFail($id);
+            return view('users.edit-user', compact('user'));
+        } else {
+            // Regular user can only edit their own account
+            if ($loggedInUser->id == $id) {
+                $user = \App\Models\User::withCount('albums')->findOrFail($id);
+                return view('users.edit-user', compact('user'));
+            }
+
+            // If they are trying to access another user's edit page, redirect back
+            return redirect()->back()->with('error', 'You do not have permission to edit this user.');
+        }
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Validate incoming request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'role' => 'required|integer',
+            'is_public' => 'boolean', // Validate as boolean
+            'can_be_public' => 'boolean', // Validate as boolean
+        ]);
+
+        // Find the user by ID
+        $user = \App\Models\User::findOrFail($id);
+
+        // Update user details
+        $user->name = $request->input('name');
+
+        // Update role only if the logged-in user is an admin
+        if (auth()->user()->role == 1 || auth()->user()->role == 2) {
+            $user->role = $request->input('role'); // Allow role change
+        }
+
+        // Check if the checkbox was checked and set the respective values
+        $user->is_public = $request->has('is_public') ? 1 : 0; // Convert checkbox to 1/0
+        $user->can_be_public = $request->has('can_be_public') ? 1 : 0; // Convert checkbox to 1/0
+
+        // Save the updated user to the database
+        $user->save();
+
+        // Redirect back to the user list with a success message
+        return redirect()->route('users.index')->with('success', 'User updated successfully!');
     }
+
 
     /**
      * Remove the specified resource from storage.

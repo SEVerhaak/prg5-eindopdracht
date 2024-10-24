@@ -1,5 +1,5 @@
-<x-standard-layout>
-    <h1>EDIT</h1>
+<x-standard-layout title="Edit-Album">
+<h1>EDIT</h1>
     <form method="POST" enctype="multipart/form-data" action={{ route('albums.update', $album->id) }}>
         @csrf
         @method('PUT')

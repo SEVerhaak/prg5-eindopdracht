@@ -26,7 +26,7 @@ class AlbumController extends Controller
             $albums = \App\Models\Album::where('user_id', auth()->id())->paginate(5);
             $genres = Genre::all();
             // Pass the paginated albums to the view
-            return view('item-page', ['albums' => $albums, 'genres' => $genres]);
+            return view('albums.item-page', ['albums' => $albums, 'genres' => $genres]);
         }
     }
 
@@ -37,7 +37,7 @@ class AlbumController extends Controller
     {
         if(auth()->check()){
             $genre = Genre::all();
-            return view('add-file', compact('genre'));
+            return view('albums.add-album', compact('genre'));
         } else{
             return view('auth.login');
         }
@@ -94,7 +94,7 @@ class AlbumController extends Controller
     public function show(string $id)
     {
         $album = Album::with('genre')->findOrFail($id);
-        return view('show-album', compact('album'));
+        return view('albums.show-album', compact('album'));
     }
 
     /**
@@ -105,7 +105,7 @@ class AlbumController extends Controller
         if(auth()->check()){
             $genre = Genre::all();
             $album = Album::findOrFail($id);
-            return view('edit', compact('album', 'genre'));
+            return view('albums.edit-album', compact('album', 'genre'));
         } else{
             return view('auth.login');
         }
@@ -152,25 +152,11 @@ class AlbumController extends Controller
      */
     public function destroy(string $id)
     {
-        // Find the album or fail if not found
-        $album = Album::findOrFail($id);
+        $album = Album::findOrFail($id); // Find the album or fail
+        $album->delete(); // Delete the album
 
-        // Check if the user is authenticated
-        if (!auth()->check()) {
-            return redirect()->route('login')->with('error', 'You must be logged in to delete an album.');
-        }
-
-        // Check if the user is either the album owner or an admin
-        if (auth()->user()->id !== $album->user_id && auth()->user()->role != 1) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        // Delete the album
-        $album->delete();
-
-        return redirect()->route('albums.index')->with('success', 'Album deleted successfully!');
+        return redirect()->route('albums.index')->with('success', 'Album deleted successfully!'); // Redirect after deletion
     }
-
 
     public function search(Request $request)
     {
@@ -212,7 +198,7 @@ class AlbumController extends Controller
         // Assuming you pass the genres to the view for the dropdown
         $genres = Genre::all();
 
-        return view('item-page', compact('albums', 'genres'));
+        return view('albums.item-page', compact('albums', 'genres'));
     }
 
 }
