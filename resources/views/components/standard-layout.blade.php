@@ -11,7 +11,7 @@
 <x-nav-bar>
 
 </x-nav-bar>
-<body>
+<body >
 {{$slot}}
 </body>
 </html>

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class AlbumController extends Controller
 {
+    private int $paginateAmount = 8;
     /**
      * Display a listing of the resource.
      */
@@ -23,7 +24,7 @@ class AlbumController extends Controller
 
             // Pass the albums to the view
             //return view('item-page', ['albums' => $albums]);
-            $albums = \App\Models\Album::where('user_id', auth()->id())->paginate(5);
+            $albums = \App\Models\Album::where('user_id', auth()->id())->paginate($this->paginateAmount);
             $genres = Genre::all();
             // Pass the paginated albums to the view
             return view('albums.item-page', ['albums' => $albums, 'genres' => $genres]);
@@ -193,7 +194,7 @@ class AlbumController extends Controller
 
         // If no search parameters, return all albums (no filtering)
         // Paginate the results
-        $albums = $albums->paginate(5);
+        $albums = $albums->paginate($this->paginateAmount);
 
         // Assuming you pass the genres to the view for the dropdown
         $genres = Genre::all();

@@ -1,27 +1,30 @@
 <x-standard-layout title="Albums of {{ $user->name }}">
-<h1>Albums of {{ $user->name }}</h1>
-    <ul>
+    <h1 class="text-3xl font-bold m-6">Albums of {{ $user->name }}</h1>
+    <ul class=" m-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         @foreach ($albums as $album)
-            <li>
-                <h3>
+            <li class="bg-white shadow-md rounded-lg p-6">
+                <h3 class="text-lg font-semibold">
                     {{ $album->name }}
                     @if ($album->album_is_public == 0 && $isAdmin)
-                        (hidden)
+                        <span class="text-red-500 text-sm font-medium">(hidden)</span>
                     @endif
                 </h3>
-                <p>Artist: {{ $album->artist }}</p>
-                <p>Year: {{ $album->year }}</p>
-                <p>Genre: {{ $album->genre->name }}</p>
+                <p class="text-gray-600">Artist: {{ $album->artist }}</p>
+                <p class="text-gray-600">Year: {{ $album->year }}</p>
+                <p class="text-gray-600">Genre: {{ $album->genre->name }}</p>
+
                 @if ($album->image_url)
-                    <img src="{{ $album->image_url }}" alt="{{ $album->name }}" style="max-width: 150px; height: auto;">
+                    <img src="{{ $album->image_url }}" alt="{{ $album->name }}" class="mt-4 max-w-full h-auto rounded-lg">
                 @else
-                    <p>No image available.</p>
+                    <p class="text-gray-600 mt-4">No image available.</p>
                 @endif
+
                 @if (auth()->user()->role == 1)
-                    <form action="{{ route('users.destroy', $album->id) }}" method="POST" style="display: inline;">
+                    <form action="{{ route('users.destroy', $album->id) }}" method="POST" class="mt-4">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" onclick="return confirm('Are you sure you want to delete this album?');">
+                        <button type="submit" class="w-full text-white bg-red-500 hover:bg-red-600 font-bold py-2 px-4 rounded shadow"
+                                onclick="return confirm('Are you sure you want to delete this album?');">
                             Delete Album
                         </button>
                     </form>
@@ -29,6 +32,9 @@
             </li>
         @endforeach
     </ul>
+
+
+
 <!-- Pagination Links -->
     <div >
         {{ $albums->links('pagination::default') }}
