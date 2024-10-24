@@ -166,4 +166,39 @@ class UserListController extends Controller
 
         return redirect()->back()->with('success', 'Album deleted successfully.');
     }
+
+    public function search(Request $request)
+    {
+        // Get the currently logged-in user's ID
+        $loggedInUserId = auth()->id();
+
+        // Start building the query with albums count
+        $query = \App\Models\User::withCount('albums')
+            ->where('id', '!=', $loggedInUserId); // Exclude the logged-in user
+
+        // Search by username if a query is provided
+        if ($request->filled('query')) {
+            $query->where('name', 'like', '%' . $request->input('query') . '%');
+        }
+
+        // Show only active users if the checkbox is checked
+        if ($request->has('active_users')) {
+            $query->where('is_public', $request->input('active-users')); // Assuming `is_public` indicates active users
+        }
+
+        // Show only admin users if the checkbox is checked
+        if ($request->has('admin_users')) {
+            $query->where(function ($subQuery) {
+                $subQuery->where('role', 1)
+                    ->orWhere('role', 2);
+            });
+        }
+
+        // Fetch the results with pagination
+        $users = $query->paginate(10); // Adjust the pagination count as needed
+
+        // Return the results to the view
+        return view('users.index', compact('users'));
+    }
+
 }

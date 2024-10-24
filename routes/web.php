@@ -10,6 +10,8 @@ Route::get('/', function () {
 Route::resource('/albums', \App\Http\Controllers\AlbumController::class);
 
 Route::get('/search', [\App\Http\Controllers\AlbumController::class, 'search'])->name('search');
+Route::get('/users/search', [\App\Http\Controllers\UserListController::class, 'search'])->name('users.search');
+
 
 Route::resource('/users', \App\Http\Controllers\UserListController::class);
 
