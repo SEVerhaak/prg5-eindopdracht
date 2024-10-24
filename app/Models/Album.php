@@ -7,8 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Album extends Model
 {
-    //protected $fillable = ['name', 'artist', 'year', 'genre_id', 'image_url'];
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'artist',
+        'year',
+        'image_url',
+        'image',
+        'genre_id',
+        'user_id',
+        'album_is_public', // Add this line to explicitly declare the property
+    ];
+
 
     public function genre(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

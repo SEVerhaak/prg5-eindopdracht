@@ -24,9 +24,9 @@ class AlbumController extends Controller
             // Pass the albums to the view
             //return view('item-page', ['albums' => $albums]);
             $albums = \App\Models\Album::where('user_id', auth()->id())->paginate(5);
-
+            $genres = Genre::all();
             // Pass the paginated albums to the view
-            return view('item-page', ['albums' => $albums]);
+            return view('item-page', ['albums' => $albums, 'genres' => $genres]);
         }
     }
 
@@ -73,15 +73,19 @@ class AlbumController extends Controller
             $album->image_url = null; // Set to null if no image was uploaded
         }
 
-        // Additional albumController fields
+        // Additional album fields
         $album->image = null;
-        $album->genre_id = 1; // Add logic for genre selection
+        $album->genre_id = $request->input('genre'); // Assign the genre selected by the user
         $album->user_id = auth()->id(); // Set the current user's ID
 
-        // Save the albumController to the database
+        // Handle the public checkbox input
+        // If the checkbox is checked, it passes a value of '1'; if unchecked, it defaults to '0'.
+        $album->album_is_public = $request->has('is_public') ? 1 : 0;
+
+        // Save the album to the database
         $album->save();
 
-        return redirect()->route('albums.index');
+        return redirect()->route('albums.index')->with('success', 'Album created successfully!');
     }
 
     /**
@@ -148,23 +152,67 @@ class AlbumController extends Controller
      */
     public function destroy(string $id)
     {
-        $album = Album::findOrFail($id); // Find the album or fail
-        $album->delete(); // Delete the album
+        // Find the album or fail if not found
+        $album = Album::findOrFail($id);
 
-        return redirect()->route('albums.index')->with('success', 'Album deleted successfully!'); // Redirect after deletion
+        // Check if the user is authenticated
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to delete an album.');
+        }
+
+        // Check if the user is either the album owner or an admin
+        if (auth()->user()->id !== $album->user_id && auth()->user()->role != 1) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Delete the album
+        $album->delete();
+
+        return redirect()->route('albums.index')->with('success', 'Album deleted successfully!');
     }
+
 
     public function search(Request $request)
     {
         $query = $request->input('query');
+        $genre = $request->input('genre');
+        $year = $request->input('year');
+        $rating = $request->input('rating');
 
+        // Start building the query
+        $albums = Album::query();
 
-        // Perform a simple search on album names or artists
-        $albums = Album::where('name', 'LIKE', "%{$query}%")
-            ->orWhere('artist', 'LIKE', "%{$query}%")
-            ->paginate(5);
+        // If any search parameters are present, apply them
+        if ($query || $genre || $year || $rating) {
+            $albums->where(function($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%")
+                    ->orWhere('artist', 'LIKE', "%{$query}%");
+            });
 
-        return view('item-page', compact('albums'));
+            // Apply genre filter if selected
+            if ($genre) {
+                $albums->where('genre_id', $genre);
+            }
+
+            // Apply year filter if provided
+            if ($year) {
+                $albums->where('year', $year);
+            }
+
+            // Apply rating filter if provided
+            if ($rating) {
+                $albums->where('rating', '>=', $rating);
+            }
+        }
+
+        // If no search parameters, return all albums (no filtering)
+        // Paginate the results
+        $albums = $albums->paginate(5);
+
+        // Assuming you pass the genres to the view for the dropdown
+        $genres = Genre::all();
+
+        return view('item-page', compact('albums', 'genres'));
     }
 
 }

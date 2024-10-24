@@ -32,6 +32,9 @@
         @endforeach
     </select>
 
+    <label for="is_public">Make this album public</label>
+    <input type="checkbox" id="is_public" name="is_public" value="1" checked>
+
     <button type="submit">Opslaan</button>
 </form>
 

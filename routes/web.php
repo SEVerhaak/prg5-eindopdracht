@@ -25,6 +25,10 @@ Route::resource('/albums', \App\Http\Controllers\AlbumController::class);
 
 Route::get('/search', [\App\Http\Controllers\AlbumController::class, 'search'])->name('search');
 
+//Route::get('/users', [\App\Http\Controllers\UserListController::class, 'index'])->name('users.index');
+
+Route::resource('/users', \App\Http\Controllers\UserListController::class);
+
 
 Route::get('/about-us/{id}', function(?string $id = null) {
     return view('about-us',
