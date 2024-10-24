@@ -3,7 +3,7 @@
 
     <!-- Link to edit the logged-in user's account -->
     <div class="mb-6">
-        <a href="{{ route('users.edit', auth()->id()) }}" class="text-white bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded shadow">
+        <a href="{{ route('profile.edit') }}" class="text-white bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded shadow">
             Edit Your Account
         </a>
     </div>
