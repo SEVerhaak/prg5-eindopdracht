@@ -19,11 +19,7 @@ class AlbumController extends Controller
             // Redirect to login page if not logged in
             return redirect()->route('login')->with('error', 'You must be logged in to view your albums.');
         } else{
-            // Retrieve albums that belong to the authenticated user
-            //$albums = Album::where('user_id', auth()->id())->get();
 
-            // Pass the albums to the view
-            //return view('item-page', ['albums' => $albums]);
             $albums = \App\Models\Album::where('user_id', auth()->id())->paginate($this->paginateAmount);
             $genres = Genre::all();
             // Pass the paginated albums to the view
@@ -95,29 +91,45 @@ class AlbumController extends Controller
     public function show(string $id)
     {
         $album = Album::with('genre')->findOrFail($id);
+
+        // Check if the album is public; if not, redirect to the welcome route
+        if (!$album->album_is_public && auth()->id() !== $album->user_id ) {
+            return redirect()->route('welcome');
+        }
+
         return view('albums.show-album', compact('album'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-        if(auth()->check()){
-            $genre = Genre::all();
+        if (auth()->check()) {
             $album = Album::findOrFail($id);
-            return view('albums.edit-album', compact('album', 'genre'));
-        } else{
-            return view('auth.login');
+
+            // Check if the logged-in user is the owner of the album
+            if (auth()->id() === $album->user_id) {
+                $genre = Genre::all();
+                return view('albums.edit-album', compact('album', 'genre'));
+            } else {
+                // Redirect to albums index if the user is not the owner
+                return redirect()->route('albums.index')->with('error', 'You do not have permission to edit this album.');
+            }
+        } else {
+            // Redirect to login if the user is not authenticated
+            return redirect()->route('login');
         }
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        $album = Album::findOrFail($id); // Get the albumController using the ID
+        $album = Album::findOrFail($id); // Get the album using the ID
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -127,26 +139,32 @@ class AlbumController extends Controller
             'genre' => 'required|exists:genres,id',
         ]);
 
-        //Album::findOrFail($albumController->id)->update(['title' => $request->input("title")]);
-
+        // Update album details
         $album->name = $request->input('title');
         $album->artist = $request->input('artist');
         $album->year = $request->input('year');
         $album->genre_id = $request->input('genre');
 
+        // Update public status based on checkbox
+        $album->album_is_public = $request->has('is_public');
+
         if ($request->hasFile('img')) {
+            // Delete the old image if it exists
             if ($album->image_url) {
                 \Storage::delete($album->image_url);
             }
 
+            // Store the new image
             $path = $request->file('img')->store('albums', 'public');
             $album->image_url = '/storage/' . $path;
         }
 
+        // Save the album
         $album->save();
 
         return redirect()->route('albums.show', $album->id)->with('success', 'Album updated successfully!');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -171,6 +189,7 @@ class AlbumController extends Controller
 
         // If any search parameters are present, apply them
         if ($query || $genre || $year || $rating) {
+            // anonieme functie returned $q, wat het resultaat is van de 2 where queries
             $albums->where(function($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%")
                     ->orWhere('artist', 'LIKE', "%{$query}%");

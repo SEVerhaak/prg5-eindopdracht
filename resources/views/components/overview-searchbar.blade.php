@@ -1,6 +1,6 @@
 @props(['genres' => $genres])
 
-<form action="{{ route('search') }}" method="GET" class="flex flex-col md:flex-row md:items-center m-6 space-y-4 md:space-y-0 md:space-x-4">
+<form action="{{ route('overview.search') }}" method="GET" class="flex flex-col md:flex-row md:items-center m-6 space-y-4 md:space-y-0 md:space-x-4">
 
     <!-- Search Input -->
     <input type="text" name="query" placeholder="Search albums..." value="{{ request('query') }}"

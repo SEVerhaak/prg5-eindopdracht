@@ -2,7 +2,8 @@
 
 @if(auth()->check())
     <!-- Add Album Button -->
-    <a href="{{ route('albums.create') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded m-6 block w-4/4 text-center">
+    <a href="{{ route('albums.create') }}"
+       class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded m-6 block w-4/4 text-center">
         Add Album
     </a>
 
@@ -20,15 +21,24 @@
                 <p class="text-gray-600">Year: {{ $album->year }}</p>
                 <p class="text-gray-600">Genre: {{ $album->genre->name }}</p>
 
+                @if(!$album->album_is_public)
+                    <p class="text-red-500">Hidden</p>
+                @else
+                    <p class="text-green-500">Public</p>
+                @endif
+
                 <!-- Display the image with max size -->
                 @if ($album->image_url)
-                    <img src="{{ $album->image_url }}" alt="{{ $album->name }}" class="my-3 max-w-full h-auto rounded-md">
+                    <img src="{{ $album->image_url }}" alt="{{ $album->name }}"
+                         class="my-3 max-w-full h-auto rounded-md">
                 @else
-                    <img src="/storage/images/placeholder.png" alt="placeholder" class="my-3 max-w-full h-auto rounded-md">
+                    <img src="/storage/images/placeholder.png" alt="placeholder"
+                         class="my-3 max-w-full h-auto rounded-md">
                     <!-- <p class="text-gray-500 mt-3">No image available for this album.</p> -->
                 @endif
 
-                <a href="{{ route('albums.show', $album->id) }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded my-3 block text-center">
+                <a href="{{ route('albums.show', $album->id) }}"
+                   class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded my-3 block text-center">
                     View {{ $album->name }}
                 </a>
             </li>

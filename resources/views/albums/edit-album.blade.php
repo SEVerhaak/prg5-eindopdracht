@@ -51,6 +51,13 @@
                     </select>
                 </div>
 
+                <!-- Public Checkbox -->
+                <div class="mb-4 flex items-center">
+                    <input type="checkbox" id="is_public" name="is_public" value="1" {{ $album->album_is_public ? 'checked' : '' }} class="form-checkbox h-5 w-5 text-blue-600">
+                    <label for="is_public" class="ml-2 text-gray-700 dark:text-gray-300">Make Album Public</label>
+                </div>
+
+
                 <!-- Submit Button -->
                 <div class="flex justify-end">
                     <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">Save Changes</button>
