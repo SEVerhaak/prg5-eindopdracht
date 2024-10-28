@@ -4,10 +4,12 @@
 <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 m-6">
     @foreach ($albums as $album)
         <li class="bg-white rounded-lg shadow-md p-4">
-            <!-- Button replacing the album name -->
-
-
-            <p class="text-gray-800 font-semibold">Artist: {{ $album->artist }}</p>
+            <!-- Display the user who posted the album -->
+            <p class="text-gray-800 font-semibold">
+                <a href="{{ route('users.show', $album->user->id) }}" class="text-blue-600 hover:underline">
+                    Posted by: {{ $album->user->name }}
+                </a>
+            </p>            <p class="text-gray-800 font-semibold">Artist: {{ $album->artist }}</p>
             <p class="text-gray-600">Year: {{ $album->year }}</p>
             <p class="text-gray-600">Genre: {{ $album->genre->name }}</p>
 
@@ -18,7 +20,6 @@
             @else
                 <img src="/storage/images/placeholder.png" alt="placeholder"
                      class="my-3 max-w-full h-auto rounded-md">
-                <!-- <p class="text-gray-500 mt-3">No image available for this album.</p> -->
             @endif
 
             <a href="{{ route('albums.show', $album->id) }}"

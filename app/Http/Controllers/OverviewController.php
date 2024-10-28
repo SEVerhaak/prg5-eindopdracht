@@ -16,11 +16,19 @@ class OverviewController extends Controller
      */
     public function index()
     {
-        $albums = Album::where('album_is_public', 1)->paginate($this->paginateAmount);
+        $albums = Album::with('user')
+        ->where('album_is_public', 1)
+            ->whereHas('user', function($query) {
+                // Only include albums from active users
+                $query->where('is_public', 1);
+            })
+            ->paginate($this->paginateAmount);
+
         $genres = Genre::all();
 
         return view('overview.index', compact('albums', 'genres'));
     }
+
 
     /**
      * Show the form for creating a new resource.

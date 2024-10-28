@@ -16,6 +16,8 @@ Route::get('/users/search', [\App\Http\Controllers\UserListController::class, 's
 Route::get('/overview/search', [\App\Http\Controllers\OverviewController::class, 'search'])->name('overview.search');
 Route::get('/overview/cheese', [\App\Http\Controllers\OverviewController::class, 'cheese'])->name('overview.cheese');
 
+Route::post('/users/{id}/toggle-public', [\App\Http\Controllers\UserListController::class, 'togglePublic'])->name('users.togglePublic');
+
 
 Route::resource('/users', \App\Http\Controllers\UserListController::class);
 

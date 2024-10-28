@@ -82,8 +82,13 @@ class AlbumController extends Controller
         // Save the album to the database
         $album->save();
 
+        // Check the number of albums posted by the user
+        $albumCount = \App\Models\Album::where('user_id', auth()->id())->count();
+
+
         return redirect()->route('albums.index')->with('success', 'Album created successfully!');
     }
+
 
     /**
      * Display the specified resource.
@@ -93,7 +98,7 @@ class AlbumController extends Controller
         $album = Album::with('genre')->findOrFail($id);
 
         // Check if the album is public; if not, redirect to the welcome route
-        if (!$album->album_is_public && auth()->id() !== $album->user_id ) {
+        if (!$album->album_is_public && auth()->id() !== $album->user_id && auth()->user()->role !== 1) {
             return redirect()->route('welcome');
         }
 
@@ -169,12 +174,26 @@ class AlbumController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        $album = Album::findOrFail($id); // Find the album or fail
-        $album->delete(); // Delete the album
+        // Ensure the user is authenticated
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to delete an album.');
+        }
 
-        return redirect()->route('albums.index')->with('success', 'Album deleted successfully!'); // Redirect after deletion
+        // Find the album or fail
+        $album = Album::findOrFail($id);
+
+        // Check if the authenticated user is the owner of the album or an admin
+        if (auth()->user()->id !== $album->user_id && auth()->user()->role !== 1) {
+            return redirect()->route('albums.index')->with('error', 'You do not have permission to delete this album.');
+        }
+
+        // Delete the album
+        $album->delete();
+
+        // Redirect after deletion
+        return redirect()->route('albums.index')->with('success', 'Album deleted successfully!');
     }
 
     public function search(Request $request)

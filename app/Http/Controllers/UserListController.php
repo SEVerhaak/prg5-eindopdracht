@@ -18,6 +18,14 @@ class UserListController extends Controller
         // Get the logged-in user
         $loggedInUser = auth()->user();
 
+        // Check the number of albums for the logged-in user
+        $albumCount = $loggedInUser->albums()->count();
+
+        // Redirect to error view if the user has fewer than 5 albums
+        if ($albumCount < 5) {
+            return view('users.error'); // Redirect to the error view
+        }
+
         // Check if the logged-in user is an admin
         if ($loggedInUser->role == 1 || $loggedInUser->role == 2) {
             // If the user is an admin, show all users except the logged-in user
@@ -34,6 +42,7 @@ class UserListController extends Controller
 
         return view('users.index', compact('users'));
     }
+
 
 
 
@@ -171,27 +180,20 @@ class UserListController extends Controller
     {
         // Get the currently logged-in user's ID
         $loggedInUserId = auth()->id();
+        $loggedInUser = \App\Models\User::find($loggedInUserId);
 
         // Start building the query with albums count
         $query = \App\Models\User::withCount('albums')
             ->where('id', '!=', $loggedInUserId); // Exclude the logged-in user
 
+        // If the logged-in user is not an admin, restrict results to only active users
+        if ($loggedInUser->role != 1 && $loggedInUser->role != 2) {
+            $query->where('is_public', 1); // Only show public users
+        }
+
         // Search by username if a query is provided
         if ($request->filled('query')) {
             $query->where('name', 'like', '%' . $request->input('query') . '%');
-        }
-
-        // Show only active users if the checkbox is checked
-        if ($request->has('active_users')) {
-            $query->where('is_public', $request->input('active-users')); // Assuming `is_public` indicates active users
-        }
-
-        // Show only admin users if the checkbox is checked
-        if ($request->has('admin_users')) {
-            $query->where(function ($subQuery) {
-                $subQuery->where('role', 1)
-                    ->orWhere('role', 2);
-            });
         }
 
         // Fetch the results with pagination
@@ -200,5 +202,25 @@ class UserListController extends Controller
         // Return the results to the view
         return view('users.index', compact('users'));
     }
+
+
+    public function togglePublic(Request $request, $id)
+    {
+        // Find the user by ID
+        $user = \App\Models\User::findOrFail($id);
+
+        // Check if the checkbox is checked
+        if ($request->has('is_public')) {
+            $user->is_public = 1;
+        } else {
+            $user->is_public = 0;
+        }
+
+        $user->save();
+
+        // Redirect
+        return redirect()->route('users.index')->with('success', 'User status updated successfully.');
+    }
+
 
 }

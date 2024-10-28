@@ -1,13 +1,15 @@
 <x-standard-layout title="Albums of {{ $user->name }}">
     <h1 class="text-3xl font-bold m-6">Albums of {{ $user->name }}</h1>
-    <ul class=" m-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <ul class="m-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         @foreach ($albums as $album)
             <li class="bg-white shadow-md rounded-lg p-6">
                 <h3 class="text-lg font-semibold">
-                    {{ $album->name }}
-                    @if ($album->album_is_public == 0 && $isAdmin)
-                        <span class="text-red-500 text-sm font-medium">(hidden)</span>
-                    @endif
+                    <a href="{{ route('albums.show', $album->id) }}" class="text-blue-500 hover:underline">
+                        {{ $album->name }}
+                        @if ($album->album_is_public == 0 && $isAdmin)
+                            <span class="text-red-500 text-sm font-medium">(hidden)</span>
+                        @endif
+                    </a>
                 </h3>
                 <p class="text-gray-600">Artist: {{ $album->artist }}</p>
                 <p class="text-gray-600">Year: {{ $album->year }}</p>
@@ -32,6 +34,8 @@
             </li>
         @endforeach
     </ul>
+</x-standard-layout>
+
 
 
 
@@ -69,6 +73,5 @@
             background-color: #f0f0f0;
         }
     </style>
-</x-standard-layout>
 
 
