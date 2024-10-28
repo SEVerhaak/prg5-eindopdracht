@@ -178,6 +178,11 @@ class UserListController extends Controller
 
     public function search(Request $request)
     {
+        // login check
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to access the search feature.');
+        }
+
         // Get the currently logged-in user's ID
         $loggedInUserId = auth()->id();
         $loggedInUser = \App\Models\User::find($loggedInUserId);

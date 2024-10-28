@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 class AlbumController extends Controller
 {
     private int $paginateAmount = 8;
+
     /**
      * Display a listing of the resource.
      */
@@ -18,7 +19,7 @@ class AlbumController extends Controller
         if (!auth()->check()) {
             // Redirect to login page if not logged in
             return redirect()->route('login')->with('error', 'You must be logged in to view your albums.');
-        } else{
+        } else {
 
             $albums = \App\Models\Album::where('user_id', auth()->id())->paginate($this->paginateAmount);
             $genres = Genre::all();
@@ -32,10 +33,10 @@ class AlbumController extends Controller
      */
     public function create()
     {
-        if(auth()->check()){
+        if (auth()->check()) {
             $genre = Genre::all();
             return view('albums.add-album', compact('genre'));
-        } else{
+        } else {
             return view('auth.login');
         }
     }
@@ -45,6 +46,10 @@ class AlbumController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to store albums!');
+        }
+
         $request->validate([
             'title' => 'required',
             'artist' => 'required',
@@ -98,8 +103,16 @@ class AlbumController extends Controller
         $album = Album::with('genre')->findOrFail($id);
 
         // Check if the album is public; if not, redirect to the welcome route
-        if (!$album->album_is_public && auth()->id() !== $album->user_id && auth()->user()->role !== 1) {
-            return redirect()->route('welcome');
+        if (!$album->album_is_public) {
+            // if the album isn't public check if the user is logged in to see if they created it or are and admin
+            if (auth()->check()) {
+                // if the album is not public check if the user is an admin or the creator of the album
+                if (auth()->user()->role !== 1 && auth()->id() !== $album->user_id) {
+                    return redirect()->route('welcome');
+                }
+            } else {
+                return redirect()->route('welcome');
+            }
         }
 
         return view('albums.show-album', compact('album'));
@@ -134,7 +147,15 @@ class AlbumController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to delete an album.');
+        }
+
         $album = Album::findOrFail($id); // Get the album using the ID
+
+        if (auth()->id() === $album->user_id) {
+            return redirect()->route('albums.index')->with('error', 'You do not have permission to edit this album.');
+        }
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -198,6 +219,11 @@ class AlbumController extends Controller
 
     public function search(Request $request)
     {
+        // login check
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to access the search feature.');
+        }
+
         $query = $request->input('query');
         $genre = $request->input('genre');
         $year = $request->input('year');
@@ -209,7 +235,7 @@ class AlbumController extends Controller
         // If any search parameters are present, apply them
         if ($query || $genre || $year || $rating) {
             // anonieme functie returned $q, wat het resultaat is van de 2 where queries
-            $albums->where(function($q) use ($query) {
+            $albums->where(function ($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%")
                     ->orWhere('artist', 'LIKE', "%{$query}%");
             });

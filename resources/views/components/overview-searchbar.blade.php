@@ -29,4 +29,4 @@
 </form>
 
 <!-- Reset Filters Link -->
-<a href="{{ route('albums.index') }}" class="text-blue-500 hover:underline m-6">Reset filters</a>
+<a href="{{ route('overview.index') }}" class="text-blue-500 hover:underline m-6">Reset filters</a>

@@ -79,8 +79,6 @@ class OverviewController extends Controller
 
     public function cheese()
     {
-        Log::info('Cheese method was called.');
-
         return 'test';
     }
 
