@@ -16,16 +16,19 @@
                 <p class="text-gray-600">Genre: {{ $album->genre->name }}</p>
 
                 @if ($album->image_url)
-                    <img src="{{ $album->image_url }}" alt="{{ $album->name }}" class="mt-4 max-w-full h-auto rounded-lg">
+                    <img src="{{ $album->image_url }}" alt="{{ $album->name }}"
+                         class="mt-4 max-w-full h-auto rounded-lg">
                 @else
-                    <p class="text-gray-600 mt-4">No image available.</p>
+                    <img src="/storage/images/placeholder.png" alt="placeholder"
+                         class="my-3 max-w-full h-auto rounded-md">
                 @endif
 
                 @if (auth()->user()->role == 1)
                     <form action="{{ route('users.destroy', $album->id) }}" method="POST" class="mt-4">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="w-full text-white bg-red-500 hover:bg-red-600 font-bold py-2 px-4 rounded shadow"
+                        <button type="submit"
+                                class="w-full text-white bg-red-500 hover:bg-red-600 font-bold py-2 px-4 rounded shadow"
                                 onclick="return confirm('Are you sure you want to delete this album?');">
                             Delete Album
                         </button>
@@ -37,11 +40,9 @@
 </x-standard-layout>
 
 
-
-
 <!-- Pagination Links -->
-    <div >
-        {{ $albums->links('pagination::default') }}
+<div>
+    {{ $albums->links('pagination::default') }}
     </div>
 
     <style>

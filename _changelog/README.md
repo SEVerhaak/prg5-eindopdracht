@@ -45,3 +45,10 @@
 ## 24 okt
 - Alles even opgeschoond, alle ongebruikte bestanden verwijderd, alle hoofd pagina's aan mappen toegevoegd voor overzicht
 - Eerste CSS toegevoegd om het wat duidelijker te maken waarmee ik aan het werken ben
+- CSS Daarna ook meteen afgemaakt voor alle pagina's
+
+## 25 okt
+- Gestart met filter opties voor de admin zoekfunctie
+- Overview toegevoegd, openbaare albums hierin zichtbaar ook voor niet users
+- Users krijgen te zien in hun eigen album overview of hun album openbaar is
+- Users kunnen per album kiezen om deze openbaar te zetten

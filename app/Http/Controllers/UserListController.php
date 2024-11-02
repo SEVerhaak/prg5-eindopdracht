@@ -6,11 +6,15 @@ use Illuminate\Http\Request;
 
 class UserListController extends Controller
 {
+
+    private int $paginateAmount = 8;
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+
         if (!auth()->check()) {
             return redirect()->route('login')->with('error', 'You must be logged in to view the users.');
         }
@@ -18,32 +22,31 @@ class UserListController extends Controller
         // Get the logged-in user
         $loggedInUser = auth()->user();
 
-        // Check the number of albums for the logged-in user
+        // Album is linked to a user through the model
+        // Then it counts the amount of linked albums to return a int
         $albumCount = $loggedInUser->albums()->count();
 
         // Redirect to error view if the user has fewer than 5 albums
         if ($albumCount < 5) {
-            return view('users.error'); // Redirect to the error view
+            return view('users.error');
         }
 
         // Check if the logged-in user is an admin
         if ($loggedInUser->role == 1 || $loggedInUser->role == 2) {
             // If the user is an admin, show all users except the logged-in user
             $users = \App\Models\User::where('id', '!=', $loggedInUser->id) // Exclude the logged-in user
-            ->withCount('albums')
-                ->paginate(10);
+                ->withCount('albums')
+                ->paginate($this->paginateAmount);
         } else {
             // If the user is not an admin, show only public users except the logged-in user
             $users = \App\Models\User::where('is_public', 1)
                 ->where('id', '!=', $loggedInUser->id) // Exclude the logged-in user
                 ->withCount('albums')
-                ->paginate(10);
+                ->paginate($this->paginateAmount);
         }
 
         return view('users.index', compact('users'));
     }
-
-
 
 
     /**
@@ -81,10 +84,10 @@ class UserListController extends Controller
         // If the user is an admin, show all albums, otherwise only public albums
         if ($isAdmin) {
             // Fetch all albums (public and hidden)
-            $albums = $user->albums()->paginate(5);
+            $albums = $user->albums()->paginate($this->paginateAmount);
         } else {
             // Fetch only public albums
-            $albums = $user->albums()->where('album_is_public', 1)->paginate(5);
+            $albums = $user->albums()->where('album_is_public', 1)->paginate($this->paginateAmount);
         }
 
         // Return the view with the user and the filtered albums
@@ -98,27 +101,14 @@ class UserListController extends Controller
     public function edit(string $id)
     {
         if (!auth()->check()) {
-            return redirect()->route('login')->with('error', 'You must be logged in to view the users.');
+            return redirect()->route('login')->with('error', 'You must be logged in to edit users.');
         }
 
-        // Get the logged-in user
-        $loggedInUser = auth()->user();
+        $this->checkAdmin();
 
-        // Check if the logged-in user is an admin
-        if ($loggedInUser->role == 1 || $loggedInUser->role == 2) {
-            // Admin can edit any user
-            $user = \App\Models\User::withCount('albums')->findOrFail($id);
-            return view('users.edit-user', compact('user'));
-        } else {
-            // Regular user can only edit their own account
-            if ($loggedInUser->id == $id) {
-                $user = \App\Models\User::withCount('albums')->findOrFail($id);
-                return view('users.edit-user', compact('user'));
-            }
+        $user = \App\Models\User::withCount('albums')->findOrFail($id);
+        return view('users.edit-user', compact('user'));
 
-            // If they are trying to access another user's edit page, redirect back
-            return redirect()->back()->with('error', 'You do not have permission to edit this user.');
-        }
     }
 
 
@@ -127,6 +117,14 @@ class UserListController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // Check if user is logged-in
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to edit users.');
+        }
+
+        // Check if user is admin
+        $this->checkAdmin();
+
         // Validate incoming request data
         $request->validate([
             'name' => 'required|string|max:255',
@@ -146,9 +144,19 @@ class UserListController extends Controller
             $user->role = $request->input('role'); // Allow role change
         }
 
-        // Check if the checkbox was checked and set the respective values
-        $user->is_public = $request->has('is_public') ? 1 : 0; // Convert checkbox to 1/0
-        $user->can_be_public = $request->has('can_be_public') ? 1 : 0; // Convert checkbox to 1/0
+        // Check if 'is_public' checkbox was checked
+        if ($request->has('is_public')) {
+            $user->is_public = 1;
+        } else {
+            $user->is_public = 0;
+        }
+
+        // Check if 'can_be_public' checkbox was checked
+        if ($request->has('can_be_public')) {
+            $user->can_be_public = 1;
+        } else {
+            $user->can_be_public = 0;
+        }
 
         // Save the updated user to the database
         $user->save();
@@ -161,14 +169,17 @@ class UserListController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public
+    function destroy(string $id)
     {
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to edit the users.');
+        }
+
         $album = \App\Models\Album::findOrFail($id);
 
         // Check if the logged-in user is an admin (role 1) before deleting the album
-        if (auth()->user()->role != 1) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->checkAdmin();
 
         // Delete the album
         $album->delete();
@@ -176,7 +187,8 @@ class UserListController extends Controller
         return redirect()->back()->with('success', 'Album deleted successfully.');
     }
 
-    public function search(Request $request)
+    public
+    function search(Request $request)
     {
         // login check
         if (!auth()->check()) {
@@ -202,7 +214,7 @@ class UserListController extends Controller
         }
 
         // Fetch the results with pagination
-        $users = $query->paginate(10); // Adjust the pagination count as needed
+        $users = $query->paginate($this->paginateAmount);
 
         // Return the results to the view
         return view('users.index', compact('users'));
@@ -211,6 +223,13 @@ class UserListController extends Controller
 
     public function togglePublic(Request $request, $id)
     {
+
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to edit the user.');
+        }
+
+        $this->checkAdmin();
+
         // Find the user by ID
         $user = \App\Models\User::findOrFail($id);
 
@@ -225,6 +244,16 @@ class UserListController extends Controller
 
         // Redirect
         return redirect()->route('users.index')->with('success', 'User status updated successfully.');
+    }
+
+    private function checkAdmin()
+    {
+        $userRole = \App\Models\User::where('id', auth()->id())->value('role');
+
+        // Ensure that only users with role 1 or 2 can perform this action
+        if ($userRole !== 1 && $userRole !== 2) {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
 

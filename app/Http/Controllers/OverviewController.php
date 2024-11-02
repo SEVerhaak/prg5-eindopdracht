@@ -94,11 +94,19 @@ class OverviewController extends Controller
 
         // If any search parameters are present, apply them
         if ($query || $genre || $year || $rating) {
+
+            // anonymous function, too complicated replace later
             $albums->where(function($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%")
                     ->orWhere('artist', 'LIKE', "%{$query}%");
             });
-
+            /*
+             * old method does not work with filters
+            if ($query) {
+                $albums->where('name', 'LIKE', "%{$query}%")
+                    ->orWhere('artist', 'LIKE', "%{$query}%");
+            }
+*/
             // Apply genre filter if selected
             if ($genre) {
                 $albums->where('genre_id', $genre);

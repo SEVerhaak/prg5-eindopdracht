@@ -16,8 +16,8 @@
             <li class="bg-white rounded-lg shadow-md p-4">
                 <!-- Button replacing the album name -->
 
-
-                <p class="text-gray-800 font-semibold">Artist: {{ $album->artist }}</p>
+                <p class="text-gray-950 font-extrabold">Name: {{ $album->name }}</p>
+                <p class="text-gray-850 font-semibold">Artist: {{ $album->artist }}</p>
                 <p class="text-gray-600">Year: {{ $album->year }}</p>
                 <p class="text-gray-600">Genre: {{ $album->genre->name }}</p>
 

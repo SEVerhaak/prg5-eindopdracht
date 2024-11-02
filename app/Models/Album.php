@@ -17,7 +17,7 @@ class Album extends Model
         'image',
         'genre_id',
         'user_id',
-        'album_is_public', // Add this line to explicitly declare the property
+        'album_is_public',
     ];
 
 
