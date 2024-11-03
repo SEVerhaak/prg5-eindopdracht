@@ -100,6 +100,8 @@ class AlbumController extends Controller
         if ($albumCount >= 5 && !$user->is_public) {
             $user->is_public = 1;
             $user->save();
+            
+            $album->save();
             return redirect()->route('albums.index')->with('success', 'You have uploaded your 5th album, your profile has been set to public!');
         }
 

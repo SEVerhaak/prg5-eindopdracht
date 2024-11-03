@@ -40,6 +40,7 @@
                     </div>
                 @endif
 
+                @if (auth()->user()->role == 1)
                 <!-- Is Public Checkbox -->
                 <div class="mb-4">
                     <label for="is_public" class="inline-flex items-center text-gray-700 dark:text-gray-300">
@@ -48,7 +49,7 @@
                         Is Active
                     </label>
                 </div>
-
+                @endif
                 <!-- Can Be Public Checkbox (Admin Only) -->
                 @if (auth()->user()->role == 1)
                     <div class="mb-4">

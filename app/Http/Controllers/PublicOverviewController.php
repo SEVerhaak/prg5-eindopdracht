@@ -25,7 +25,8 @@ class PublicOverviewController extends Controller
             ->whereHas('user', function($query) {
                 $query->where('is_public', 1);
             })
-                ->paginate($this->paginateAmount);
+            ->orderBy('created_at', 'desc')
+            ->paginate($this->paginateAmount);
 
         // pass the albums to the view
         return view('overview.index', compact('albums','genres', 'query'));
@@ -59,7 +60,9 @@ class PublicOverviewController extends Controller
         $albums = $albums->where('album_is_public', 1)
             ->whereHas('user', function($query) {
                 $query->where('is_public', 1);
-            });
+            })
+            ->orderBy('created_at', 'desc')
+        ;
 
         // apply search filter if provided
         if ($query) {

@@ -29,7 +29,7 @@
                     </div>
 
                     <!-- Toggle for setting user to public -->
-                    @if (auth()->user()->role == 1 || auth()->user()->role == 2)
+                    @if (auth()->user()->role == 1)
                         <form action="{{ route('users.togglePublic', $user->id) }}" method="POST" class="flex items-center mt-4">
                             @csrf
                             <label class="inline-flex items-center cursor-pointer">
