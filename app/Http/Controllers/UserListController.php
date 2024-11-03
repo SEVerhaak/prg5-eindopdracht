@@ -85,9 +85,11 @@ class UserListController extends Controller
         if ($isAdmin) {
             // Fetch all albums (public and hidden)
             $albums = $user->albums()->paginate($this->paginateAmount);
-        } else {
+        } else if ($user->is_public === 1){
             // Fetch only public albums
             $albums = $user->albums()->where('album_is_public', 1)->paginate($this->paginateAmount);
+        } else{
+            return redirect()->back();
         }
 
         // Return the view with the user and the filtered albums
