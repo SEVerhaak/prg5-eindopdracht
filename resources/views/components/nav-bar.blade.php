@@ -23,6 +23,12 @@
                         Users
                     </a>
 
+                    @if (auth()->user()->role == 1 || auth()->user()->role == 2)
+                        <a href="{{ route('genres.index') }}" class="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
+                            Genre Editor
+                        </a>
+                    @endif
+
                     <a href="{{ url('/dashboard') }}" class="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
                         Dashboard
                     </a>

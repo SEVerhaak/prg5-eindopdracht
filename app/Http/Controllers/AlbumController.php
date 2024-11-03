@@ -22,7 +22,7 @@ class AlbumController extends Controller
             return redirect()->route('login')->with('error', 'You must be logged in to view your albums.');
         } else {
             // Only return albums from the currently logged-in user
-            $albums = \App\Models\Album::where('user_id', auth()->id()) -> paginate($this->paginateAmount);
+            $albums = Album::where('user_id', auth()->id()) -> paginate($this->paginateAmount);
             // Retrieve all genres
             $genres = Genre::all();
             // Pass the paginated albums & genres to the view
@@ -59,7 +59,7 @@ class AlbumController extends Controller
             'img' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // File validation with constraints
         ]);
 
-        $album = new \App\Models\Album();
+        $album = new Album();
         $album->name = $request->input('title');
         $album->artist = $request->input('artist');
         $album->year = $request->input('year');
@@ -94,7 +94,7 @@ class AlbumController extends Controller
 
         // Check if the user has reached 5 albums
         $user = auth()->user();
-        $albumCount = \App\Models\Album::where('user_id', $user->id)->count();
+        $albumCount = Album::where('user_id', $user->id)->count();
 
         // If the user has reached 5 albums and their profile is not public, make it public
         if ($albumCount >= 5 && !$user->is_public) {
@@ -167,15 +167,18 @@ class AlbumController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        //dd($request);
+
         if (!auth()->check()) {
             return redirect()->route('login')->with('error', 'You must be logged in to edit an album.');
         }
 
         $album = Album::findOrFail($id); // Get the album using the ID
 
-        if (auth()->id() === $album->user_id) {
+        if (auth()->id() !== $album->user_id) {
             return redirect()->route('albums.index')->with('error', 'You do not have permission to edit this album.');
         }
+
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -191,8 +194,7 @@ class AlbumController extends Controller
         $album->year = $request->input('year');
         $album->genre_id = $request->input('genre');
 
-        // Update public status based on checkbox
-        $album->album_is_public = $request->has('is_public');
+        $album->album_is_public = $request->input('is_public', 0);
 
         if ($request->hasFile('img')) {
             // Delete the old image if it exists

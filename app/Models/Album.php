@@ -9,6 +9,9 @@ class Album extends Model
 {
     use HasFactory;
 
+    /**
+     * @var \Illuminate\Support\HigherOrderCollectionProxy|mixed
+     */
     protected $fillable = [
         'name',
         'artist',
