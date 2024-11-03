@@ -1,6 +1,6 @@
 @props(['albums' => $albums, 'genres' => $genres])
 
-<x-standard-layout title="Personal Album Overview">
+<x-standard-layout title="Public Album Overview">
     <h1 class="text-3xl font-bold m-6">Album Overview</h1>
 
     <x-overview-list :albums="$albums" :genres="$genres">

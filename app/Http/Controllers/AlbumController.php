@@ -92,6 +92,17 @@ class AlbumController extends Controller
             $album->album_is_public = 0;
         }
 
+        // Check if the user has reached 5 albums
+        $user = auth()->user();
+        $albumCount = \App\Models\Album::where('user_id', $user->id)->count();
+
+        // If the user has reached 5 albums and their profile is not public, make it public
+        if ($albumCount >= 5 && !$user->is_public) {
+            $user->is_public = 1;
+            $user->save();
+            return redirect()->route('albums.index')->with('success', 'You have uploaded your 5th album, your profile has been set to public!');
+        }
+
         // Save the album to the database
         $album->save();
 
@@ -214,7 +225,7 @@ class AlbumController extends Controller
         // Find the album or fail
         $album = Album::findOrFail($id);
 
-        // Check if the authenticated user is the owner of the album or an admin
+        // Check if user is the owner of the album or an admin
         if (auth()->user()->id !== $album->user_id && auth()->user()->role !== 1) {
             return redirect()->route('albums.index')->with('error', 'You do not have permission to delete this album.');
         }
@@ -228,25 +239,28 @@ class AlbumController extends Controller
 
     public function search(Request $request)
     {
-        // login check
+        // Login check (because searching through albums in this controller requires a search through the users own albums)
         if (!auth()->check()) {
             return redirect()->route('login')->with('error', 'You must be logged in to access the search feature.');
         }
 
+        // form values
         $query = $request->input('query');
         $genre = $request->input('genre');
         $year = $request->input('year');
         $rating = $request->input('rating');
 
-        // Start building the query
+        // start building the query
         $albums = Album::query();
 
-        // If any search parameters are present, apply them
+        // if any search parameters are present, apply them
         if ($query || $genre || $year || $rating) {
             // search in the name column and artist column of the albums DB
+
             if ($query) {
                 $albums->whereRaw("(name LIKE ? OR artist LIKE ?)", ["%{$query}%", "%{$query}%"]);
             }
+
 
             // Apply genre filter if selected
             if ($genre) {

@@ -77,11 +77,6 @@ class OverviewController extends Controller
         //
     }
 
-    public function cheese()
-    {
-        return 'test';
-    }
-
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -95,11 +90,10 @@ class OverviewController extends Controller
         // If any search parameters are present, apply them
         if ($query || $genre || $year || $rating) {
 
-            // anonymous function, too complicated replace later
-            $albums->where(function($q) use ($query) {
-                $q->where('name', 'LIKE', "%{$query}%")
-                    ->orWhere('artist', 'LIKE', "%{$query}%");
-            });
+            if ($query) {
+                $albums->whereRaw("(name LIKE ? OR artist LIKE ?)", ["%{$query}%", "%{$query}%"]);
+            }
+
             /*
              * old method does not work with filters
             if ($query) {
