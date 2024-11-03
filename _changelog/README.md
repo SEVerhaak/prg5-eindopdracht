@@ -52,3 +52,12 @@
 - Overview toegevoegd, openbaare albums hierin zichtbaar ook voor niet users
 - Users krijgen te zien in hun eigen album overview of hun album openbaar is
 - Users kunnen per album kiezen om deze openbaar te zetten
+
+## 28 okt
+- Comments toegevoegd aan (meeste) bestanden
+- CSS consistent gemaakt
+
+## 3 nov
+- Admin only genre editor pagina toegevoegd 
+- Bugfix met dat editen van eigen albums niet kon
+- Search toegevoegd voor de overview pagina
