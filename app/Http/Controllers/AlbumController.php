@@ -22,7 +22,7 @@ class AlbumController extends Controller
             return redirect()->route('login')->with('error', 'You must be logged in to view your albums.');
         } else {
             // Only return albums from the currently logged-in user
-            $albums = Album::where('user_id', auth()->id()) -> paginate($this->paginateAmount);
+            $albums = Album::where('user_id', auth()->id() ) -> paginate($this->paginateAmount);
             // Retrieve all genres
             $genres = Genre::all();
             // Pass the paginated albums & genres to the view
@@ -255,14 +255,19 @@ class AlbumController extends Controller
         // start building the query
         $albums = Album::query();
 
+        // only search through albums the current logged-in user owns
+        $albums = Album::query()
+            ->whereHas('user', function($query) {
+                // show all albums for the currently logged-in user
+                $query->where('id', auth()->id());
+            });
+
         // if any search parameters are present, apply them
         if ($query || $genre || $year || $rating) {
             // search in the name column and artist column of the albums DB
-
             if ($query) {
                 $albums->whereRaw("(name LIKE ? OR artist LIKE ?)", ["%{$query}%", "%{$query}%"]);
             }
-
 
             // Apply genre filter if selected
             if ($genre) {
@@ -280,7 +285,7 @@ class AlbumController extends Controller
             }
         }
 
-        // If no search parameters, return all albums (no filtering)
+        // If no search parameters, return all albums of the currently logged-in user
         // Paginate the results
         $albums = $albums->paginate($this->paginateAmount);
 

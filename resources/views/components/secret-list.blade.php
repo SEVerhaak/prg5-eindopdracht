@@ -53,7 +53,7 @@
     <p class="text-red-500">You are not logged in.</p>
 @endif
 
-
+<!-- only way styling would work :( -->
 <style>
     .pagination {
         display: flex;

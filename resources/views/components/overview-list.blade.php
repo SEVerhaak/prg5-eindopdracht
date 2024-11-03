@@ -1,4 +1,3 @@
-<x-overview-searchbar :genres="$genres"></x-overview-searchbar>
 
 <!-- Albums Grid -->
 <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 m-6">
@@ -34,3 +33,36 @@
 <div class="mt-6">
     {{ $albums->links('pagination::default') }}
 </div>
+
+<!-- only way styling would work :( -->
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 5rem;
+    }
+
+    .pagination li {
+        margin: 0 5px; /* Add space between items */
+    }
+
+    .pagination a, .pagination span {
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        text-decoration: none;
+        background-color: #fff;
+        color: #333;
+        border-radius: 0.5rem;
+    }
+
+    .pagination .active span {
+        background-color: #4285f4;
+        color: white;
+    }
+
+    .pagination a:hover {
+        background-color: #f0f0f0;
+    }
+</style>

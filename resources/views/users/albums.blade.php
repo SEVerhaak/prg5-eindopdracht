@@ -1,5 +1,11 @@
 <x-standard-layout title="Albums of {{ $user->name }}">
-    <h1 class="text-3xl font-bold m-6">Albums of {{ $user->name }}</h1>
+    <!-- User Information Box -->
+    <div class="bg-gray-100 border rounded-lg p-4 mb-6">
+        <h2 class="text-xl font-semibold">Album Collection of {{ $user->name }} </h2>
+        <p><strong>Username:</strong> {{ $user->name }}</p>
+        <p><strong>Role:</strong> {{ $user->role == 1 ? 'Admin' : 'User' }}</p>
+        <p><strong>Joined On:</strong> {{ $user->created_at->format('Y-m-d') }}</p>
+    </div>
     <ul class="m-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         @foreach ($albums as $album)
             <li class="bg-white shadow-md rounded-lg p-6">
@@ -45,34 +51,37 @@
     {{ $albums->links('pagination::default') }}
     </div>
 
-    <style>
-        .pagination {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            padding-left: 0;
-        }
+<!-- only way styling would work :( -->
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 5rem;
+    }
 
-        .pagination li {
-            margin: 0 5px; /* Add space between items */
-        }
+    .pagination li {
+        margin: 0 5px; /* Add space between items */
+    }
 
-        .pagination a, .pagination span {
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            text-decoration: none;
-            background-color: #fff;
-            color: #333;
-        }
+    .pagination a, .pagination span {
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        text-decoration: none;
+        background-color: #fff;
+        color: #333;
+        border-radius: 0.5rem;
+    }
 
-        .pagination .active span {
-            background-color: #4285f4;
-            color: white;
-        }
+    .pagination .active span {
+        background-color: #4285f4;
+        color: white;
+    }
 
-        .pagination a:hover {
-            background-color: #f0f0f0;
-        }
-    </style>
+    .pagination a:hover {
+        background-color: #f0f0f0;
+    }
+</style>
 
 

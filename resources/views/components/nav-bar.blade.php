@@ -10,6 +10,7 @@
         <!-- Right side (Login/Logout and other links) -->
         @if (Route::has('login'))
             <div class="space-x-4 flex items-center">
+                <!-- fix later -->
                 <a href="{{ route('overview.index') }}" class="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
                     Overview
                 </a>
